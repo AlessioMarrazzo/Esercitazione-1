@@ -3,13 +3,19 @@
 	@author Gabriele Triglia matr.: 6440314
 	@author Alessio Marrazzo matr.: 6195070
 
-	Details.
+	Un polinomio (classe Polynomial) è formalizzato come c0 + c1x + c2x2 + ……. 
+
+	La classe deve quindi prevedere le seguenti variabili membro:  
+
+	int degree 	per memorizzare il grado del polinomio  
+
+	double* coeff 	per memorizzare i coefficienti, a partire da c0  
 */
 
 #include "CPolynomial.h"
 
 /**
- * @brief default constructor (not a meaningful polynom)
+ * @brief costruttore di default (polinomio non sensato)
  */
 Polynomial::Polynomial() {
 	degree=-1;
@@ -18,9 +24,9 @@ Polynomial::Polynomial() {
 
 
 /**
- * @brief constructor
- * @param coefficients array with the coefficients (format: c0+c1*x+ ...)
- * @param size size of the array 
+ * @brief costruttore con tutti gil attributi per la classe Polynomial
+ * @param coefficients array coi coefficienti (formato: c0+c1*x+ ...)
+ * @param size dimensione dell'array
  */
 Polynomial::Polynomial(const double* coefficients, int size) {
 	degree = -1;
@@ -29,7 +35,7 @@ Polynomial::Polynomial(const double* coefficients, int size) {
 }
 
 /**
- * @brief decontructor
+ * @brief distruttore per la classe Polynomial
  */
 Polynomial::~Polynomial() {
     
@@ -40,20 +46,20 @@ Polynomial::~Polynomial() {
 }
 
 /**
- * @brief copy constructor
+ * @brief costruttore di copia per la classe Polynomial
  */
 Polynomial::Polynomial(const Polynomial& p) {
 	
 	int i;
 	
 	if (p.coeff == NULL) {
-		ErrorMessage("Copy constructor: the object to be copied has no coefficients");
+		ErrorMessage("Costruttore di copia: l'oggetto da copiare non ha coefficienti");
 		exit(-1);
 	}
 	degree = p.degree;
 	coeff = new double[degree + 1];
 	if (coeff == NULL) {
-		ErrorMessage("Copy constructor: cannot allocate memory");
+		ErrorMessage("Costruttore di copia: impossibile allocare memoria");
 		exit(-1);
 	}
 	
@@ -62,9 +68,9 @@ Polynomial::Polynomial(const Polynomial& p) {
 }
 
 /**
- * @brief overload operator =
- * @param p object to be copied
- * @return a copy of the object
+ * @brief Overload dell'operatore = per la classe Polynomial
+ * @param p l'oggetto di tipo Polynomial da copiare
+ * @return l'oggetto copiato
  */
 Polynomial& Polynomial::operator=(const Polynomial& p) {
     
@@ -76,7 +82,7 @@ Polynomial& Polynomial::operator=(const Polynomial& p) {
         degree = p.degree;
         coeff = new double[degree + 1];
 		if (coeff == NULL) {
-			ErrorMessage("Operator =: cannot allocate memory");
+			ErrorMessage("Operatore = : impossibile allocare memoria");
 			exit(-1);
 		}
         for (i=0;i<=degree;i++)
@@ -85,7 +91,11 @@ Polynomial& Polynomial::operator=(const Polynomial& p) {
     return *this;
 }
 
-/// @brief overload operator ==
+/**
+ * @brief Overload dell operatore == per la classe Polynomial
+ * @param p oggetto di tipo Polynomial da confrontare
+ * @return true se gli oggetti sono uguali, false altrimenti
+ */
 bool Polynomial::operator==(const Polynomial& p) {
 	
 	int i;
@@ -103,16 +113,16 @@ bool Polynomial::operator==(const Polynomial& p) {
 }
 
 /**
- * @brief sets the coefficients of the polynomial
- * @param coefficients array with the coefficients (format: c0+c1*x+ ...)
- * @param size size of the array
+ * @brief imposta i coefficienti del polinomio
+ * @param coefficients array coi coefficienti (formato: c0+c1*x+ ...)
+ * @param size dimensione dell'array
  */
 void Polynomial::SetPolynomial(const double* coefficients, int size) {
 	
 	int i=0;
 	
 	if (size < 1) {
-		ErrorMessage("SetPolynomial: the degree of the Polynomial cannot be negative");
+		ErrorMessage("SetPolynomial: il grado del polinomio non può essere negativo");
 		exit(-1);
 	}
 	
@@ -122,7 +132,7 @@ void Polynomial::SetPolynomial(const double* coefficients, int size) {
 	degree = size - 1;
     coeff = new double[size]; // restituisce double* dove 
 	if (coeff == NULL) {
-		ErrorMessage("SetPolynomial: cannot allocate memory");
+		ErrorMessage("SetPolynomial: impossibile allocare memoria");
 		exit(-1);
 	}
 	
@@ -140,7 +150,18 @@ double Polynomial::GetValue(double in) {
     int i;
 	double x = in;
 	double result = 0.0;
-        
+    
+	if (degree == -1) {
+		cout << "Polinopmio non inizializzato" << endl;
+		return -1.;
+	}
+	
+	if (coeff == NULL) {
+		cout << "Degree: " << degree << endl;
+		cout << "Nessun coefficiente inserito" << endl;
+		return -1.;
+	}
+
 	result = coeff[0];
 	for (i=1; i<=degree; i++) {
 		result += coeff[i]*x;
@@ -163,8 +184,8 @@ void Polynomial::Reset() {
 }
 
 /**
- * @brief writes an error message 
- * @param string message to be printed
+ * @brief scrive un error message 
+ * @param string messaggio da stampare
  */
 void Polynomial::ErrorMessage(const char *string) {
 	
@@ -174,8 +195,8 @@ void Polynomial::ErrorMessage(const char *string) {
 }
 
 /**
- * @brief writes a warning message
- * @param string message to be printed
+ * @brief scrive un warning message
+ * @param string messaggio da stampare
  */ 
 void Polynomial::WarningMessage(const char *string) {
 	
@@ -185,20 +206,20 @@ void Polynomial::WarningMessage(const char *string) {
 }
 
 /**
- * @brief gives the status of the object
+ * @brief fornisce lo stato dell'oggetto
  */ 
 void Polynomial::Dump() {
 
 	int i;
 	
 	if (degree == -1) {
-		cout << "Uninitialized polynomial" << endl;
+		cout << "Polinopmio non inizializzato" << endl;
 		return;
 	}
 	
 	if (coeff == NULL) {
 		cout << "Degree: " << degree << endl;
-		cout << "No coefficients available" << endl;
+		cout << "Nessun coefficiente inserito" << endl;
 		return;
 	}
 	
